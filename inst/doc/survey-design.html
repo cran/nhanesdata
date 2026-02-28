@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Creating Survey Design Objects</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Creating Survey Design Objects</h1>
+
+
+
+<div id="why-survey-weights-matter" class="section level2">
+<h2>Why Survey Weights Matter</h2>
+<p>NHANES uses a complex, multistage probability sampling design to
+select participants who represent the non-institutionalized U.S.
+population. Without proper survey weights, analyses will produce biased
+estimates. The <code>create_design()</code> function automates the
+calculation of appropriate weights when combining multiple NHANES
+cycles, following <a href="https://wwwn.cdc.gov/nchs/nhanes/tutorials/Weighting.aspx">CDC
+weighting guidelines</a>.</p>
+</div>
+<div id="understanding-nhanes-weights" class="section level2">
+<h2>Understanding NHANES Weights</h2>
+<p>NHANES provides three categories of sampling weights, each reflecting
+different levels of participation:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Interview weights</strong> (<code>wtint2yr</code>,
+<code>wtint4yr</code>): Used when all variables come from the household
+interview (demographics, questionnaires).</li>
+<li><strong>Mobile Exam Center (MEC) weights</strong>
+(<code>wtmec2yr</code>, <code>wtmec4yr</code>): Used when any variable
+requires a physical exam (laboratory tests, body measurements, DEXA
+scans).</li>
+<li><strong>Fasting weights</strong> (<code>wtsaf2yr</code>): Used when
+any variable requires fasting laboratory tests (glucose, insulin,
+lipids).</li>
+</ol>
+<p>The probability of being sampled decreases from interview to MEC to
+fasting subsamples. When combining variables across categories, always
+use the weight with the lowest probability of selection. For example, if
+your analysis includes both demographics (interview) and body
+measurements (MEC), use MEC weights.</p>
+</div>
+<div id="weight-calculation-logic" class="section level2">
+<h2>Weight Calculation Logic</h2>
+<p>CDC recommendations for combining cycles are based on the number of
+cycles present in your data, not the timespan covered. This distinction
+matters when you have gaps in your data.</p>
+<div id="early-cycles-1999-2002" class="section level3">
+<h3>Early Cycles (1999-2002)</h3>
+<p>NHANES provides 4-year weights (<code>wtint4yr</code>,
+<code>wtmec4yr</code>) for 1999-2000 and 2001-2002 cycles, while all
+subsequent cycles provide only 2-year weights. When combining multiple
+cycles:</p>
+<ul>
+<li><p><strong>Cycles 1999 or 2001</strong>: Use 4-year weight × (2/n)
+The numerator is 2 because the 4-year weight represents two 2-year
+cycles.</p></li>
+<li><p><strong>Cycles 2003+</strong>: Use 2-year weight × (1/n)</p></li>
+<li><p><strong>Denominator n</strong>: Total number of cycles in your
+analysis</p></li>
+</ul>
+</div>
+<div id="example-calculation" class="section level3">
+<h3>Example Calculation</h3>
+<p>Combining 4 cycles (1999, 2001, 2003, 2005) with MEC weights:</p>
+<ul>
+<li>1999 &amp; 2001: <code>wtmec4yr * 2/4 = wtmec4yr * 0.5</code></li>
+<li>2003 &amp; 2005: <code>wtmec2yr * 1/4 = wtmec2yr * 0.25</code></li>
+</ul>
+<p>If you excluded the 2003 cycle, you would have 3 cycles total,
+so:</p>
+<ul>
+<li>1999 &amp; 2001: <code>wtmec4yr * 2/3</code></li>
+<li>2005: <code>wtmec2yr * 1/3</code></li>
+</ul>
+<p>The key principle: <strong>n is the number of cycles
+present</strong>, not the timespan.</p>
+</div>
+</div>
+<div id="basic-usage" class="section level2">
+<h2>Basic Usage</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(nhanesdata)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">library</span>(srvyr)</span></code></pre></div>
+<div id="example-1-interview-weights" class="section level3">
+<h3>Example 1: Interview Weights</h3>
+<p>When analyzing demographics and questionnaire data only:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Load demographics data</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>demo <span class="ot">&lt;-</span> <span class="fu">read_nhanes</span>(<span class="st">&quot;demo&quot;</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co"># Create design with interview weights</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>design_int <span class="ot">&lt;-</span> <span class="fu">create_design</span>(</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>  <span class="at">dsn =</span> demo,</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>  <span class="at">start_yr =</span> <span class="dv">1999</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>  <span class="at">end_yr =</span> <span class="dv">2011</span>,</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>  <span class="at">wt_type =</span> <span class="st">&quot;interview&quot;</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>)</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="co"># Calculate weighted means</span></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>design_int <span class="sc">|&gt;</span></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>    <span class="at">mean_age =</span> <span class="fu">survey_mean</span>(ridageyr, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a>    <span class="at">pct_female =</span> <span class="fu">survey_mean</span>(riagendr <span class="sc">==</span> <span class="dv">2</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a>  )</span></code></pre></div>
+</div>
+<div id="example-2-mec-weights" class="section level3">
+<h3>Example 2: MEC Weights</h3>
+<p>When including any examination or laboratory data:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Load demographics and body measures</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>demo <span class="ot">&lt;-</span> <span class="fu">read_nhanes</span>(<span class="st">&quot;demo&quot;</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>bmx <span class="ot">&lt;-</span> <span class="fu">read_nhanes</span>(<span class="st">&quot;bmx&quot;</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>combined <span class="ot">&lt;-</span> demo <span class="sc">|&gt;</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>  <span class="fu">left_join</span>(bmx, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;seqn&quot;</span>, <span class="st">&quot;year&quot;</span>))</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co"># Use MEC weights because body measures require exam participation</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>design_mec <span class="ot">&lt;-</span> <span class="fu">create_design</span>(</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>  <span class="at">dsn =</span> combined,</span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>  <span class="at">start_yr =</span> <span class="dv">2007</span>,</span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>  <span class="at">end_yr =</span> <span class="dv">2017</span>,</span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>  <span class="at">wt_type =</span> <span class="st">&quot;mec&quot;</span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>)</span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="co"># Weighted BMI analysis</span></span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a>design_mec <span class="sc">|&gt;</span></span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(bmxbmi)) <span class="sc">|&gt;</span></span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a>    <span class="at">mean_bmi =</span> <span class="fu">survey_mean</span>(bmxbmi, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a>    <span class="at">pct_obese =</span> <span class="fu">survey_mean</span>(bmxbmi <span class="sc">&gt;=</span> <span class="dv">30</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a>  )</span></code></pre></div>
+</div>
+<div id="example-3-fasting-weights" class="section level3">
+<h3>Example 3: Fasting Weights</h3>
+<p>When including fasting laboratory measurements:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># Load demographics and fasting lab data</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>demo <span class="ot">&lt;-</span> <span class="fu">read_nhanes</span>(<span class="st">&quot;demo&quot;</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>glu <span class="ot">&lt;-</span> <span class="fu">read_nhanes</span>(<span class="st">&quot;glu&quot;</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>combined <span class="ot">&lt;-</span> demo <span class="sc">|&gt;</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>  <span class="fu">left_join</span>(glu, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;seqn&quot;</span>, <span class="st">&quot;year&quot;</span>))</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co"># Use fasting weights for glucose analysis</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>design_fast <span class="ot">&lt;-</span> <span class="fu">create_design</span>(</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>  <span class="at">dsn =</span> combined,</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>  <span class="at">start_yr =</span> <span class="dv">2005</span>,</span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>  <span class="at">end_yr =</span> <span class="dv">2015</span>,</span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>  <span class="at">wt_type =</span> <span class="st">&quot;fasting&quot;</span></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a>)</span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="co"># Analyze fasting glucose</span></span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a>design_fast <span class="sc">|&gt;</span></span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(lbxglu)) <span class="sc">|&gt;</span></span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a>    <span class="at">mean_glucose =</span> <span class="fu">survey_mean</span>(lbxglu, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a>  )</span></code></pre></div>
+</div>
+</div>
+<div id="handling-edge-cases" class="section level2">
+<h2>Handling Edge Cases</h2>
+<div id="non-sequential-cycles" class="section level3">
+<h3>Non-Sequential Cycles</h3>
+<p>You can specify a wide year range even if some cycles are missing
+from your data. The function calculates weights based only on cycles
+actually present:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Data might be missing 2007-2010 cycles</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="co"># Weights calculated on cycles present, not timespan</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>design <span class="ot">&lt;-</span> <span class="fu">create_design</span>(</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="at">dsn =</span> demo,</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="at">start_yr =</span> <span class="dv">1999</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  <span class="at">end_yr =</span> <span class="dv">2017</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  <span class="at">wt_type =</span> <span class="st">&quot;interview&quot;</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="participants-without-valid-weights" class="section level3">
+<h3>Participants Without Valid Weights</h3>
+<p>When creating a survey design, some participants may lack the weight
+variable needed for your analysis. This happens naturally in NHANES
+because not everyone completes every component.</p>
+<p><strong>How <code>create_design()</code> handles this:</strong></p>
+<ul>
+<li>Participants without valid weights for your chosen weight type are
+<strong>automatically filtered out</strong> before creating the design
+object</li>
+<li>You’ll see a message indicating how many participants were removed
+and why</li>
+<li>The message includes links to CDC guidance and this vignette for
+reference</li>
+</ul>
+<p>Example message you might see:</p>
+<pre><code>Filtered out 150 participants without valid mec weights.
+These participants were not in the subsample for this weight category.
+Learn more:
+  + CDC weighting guidance:
+    https://wwwn.cdc.gov/nchs/nhanes/tutorials/Weighting.aspx
+  + Survey design vignette: vignette(&#39;survey-design&#39;, package = &#39;nhanesdata&#39;)</code></pre>
+<p><strong>Zero weights</strong> are different from missing weights:</p>
+<ul>
+<li>Participants with <strong>zero weights</strong> are retained in the
+design object</li>
+<li>These participants weren’t selected for a particular subsample</li>
+<li>They’re automatically excluded from analyses by the {survey}
+package</li>
+<li>This is the correct behavior per CDC guidelines</li>
+</ul>
+</div>
+</div>
+<div id="variance-estimation-and-lonely-psus" class="section level2">
+<h2>Variance Estimation and Lonely PSUs</h2>
+<p>NHANES uses a stratified, multistage sampling design with Primary
+Sampling Units (PSUs) nested within strata. Variance estimation requires
+at least 2 PSUs per stratum. When subsetting data (e.g., filtering to
+diabetes patients only), you may create strata with only one PSU.</p>
+<p>The <code>create_design()</code> function sets
+<code>options(survey.lonely.psu = &quot;adjust&quot;)</code>, which handles this
+conservatively by centering single-PSU strata at the sample grand mean
+rather than the stratum mean. This approach:</p>
+<ul>
+<li>Prevents errors when encountering lonely PSUs</li>
+<li>Provides conservative variance estimates</li>
+<li>Follows best practices for subset analyses</li>
+</ul>
+<p>For more details on lonely PSU handling, see Thomas Lumley’s <a href="https://r-survey.r-forge.r-project.org/survey/exmample-lonely.html">{survey}
+package documentation</a>.</p>
+</div>
+<div id="required-variables" class="section level2">
+<h2>Required Variables</h2>
+<p>The function validates that your dataset contains:</p>
+<ul>
+<li><code>year</code>: NHANES cycle start year (odd years: 1999, 2001,
+2003, …, 2021)</li>
+<li><code>sdmvpsu</code>: Primary sampling units</li>
+<li><code>sdmvstra</code>: Sampling strata</li>
+<li>Appropriate weight variables based on <code>wt_type</code>:
+<ul>
+<li>Interview: <code>wtint2yr</code> (and <code>wtint4yr</code> if
+1999/2001 cycles present)</li>
+<li>MEC: <code>wtmec2yr</code> (and <code>wtmec4yr</code> if 1999/2001
+cycles present)</li>
+<li>Fasting: <code>wtsaf2yr</code></li>
+</ul></li>
+</ul>
+<p>These variables are automatically included in datasets loaded via
+<code>read_nhanes()</code>.</p>
+</div>
+<div id="workflow-recommendations" class="section level2">
+<h2>Workflow Recommendations</h2>
+<ol style="list-style-type: decimal">
+<li><strong>Load and combine datasets</strong> using
+<code>read_nhanes()</code> and {dplyr} joins</li>
+<li><strong>Preprocess variables</strong> (recode, create derived
+variables, apply exclusions)</li>
+<li><strong>Create the design object</strong> with
+<code>create_design()</code></li>
+<li><strong>Perform weighted analyses</strong> using {srvyr} or {survey}
+functions</li>
+</ol>
+<p>Preprocessing before design creation is strongly recommended. Once
+the design object is created, filtering and recoding become more complex
+due to the survey structure.</p>
+</div>
+<div id="additional-resources" class="section level2">
+<h2>Additional Resources</h2>
+<ul>
+<li><a href="https://wwwn.cdc.gov/nchs/nhanes/tutorials/default.aspx">CDC
+NHANES Tutorials</a>: Official guidance on survey weighting and variance
+estimation</li>
+<li><a href="https://wwwn.cdc.gov/nchs/nhanes/tutorials/Weighting.aspx">CDC
+Weighting Module</a>: Specific information on combining survey
+cycles</li>
+<li><a href="https://r-survey.r-forge.r-project.org/survey/">{survey}
+package documentation</a>: Comprehensive guide to complex survey
+analysis in R</li>
+<li><a href="https://github.com/gergness/srvyr">{srvyr} package</a>:
+Tidyverse-friendly wrapper for {survey} package functions</li>
+</ul>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
