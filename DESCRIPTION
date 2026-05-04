@@ -1,10 +1,10 @@
 Package: nhanesdata
 Title: Harmonized Access to NHANES Survey Data
-Version: 0.2.1
+Version: 0.2.2
 Authors@R: c(
     person(
         "Kyle", "Grealis",
-        email = "kylegrealis@proton.me",
+        email = "kyle@kylegrealis.com",
         role = c("aut", "cre"),
         comment = c(ORCID = "0000-0002-9223-8854")
     ),
@@ -55,7 +55,7 @@ Suggests: cli, curl, devtools, fs, ggplot2, httptest2, janitor,
 Config/testthat/edition: 3
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2026-02-23 19:09:49 UTC; kyle
+Packaged: 2026-05-04 18:37:30 UTC; kxg679
 Author: Kyle Grealis [aut, cre] (ORCID:
     <https://orcid.org/0000-0002-9223-8854>),
   Amrit Baral [ctb] (ORCID: <https://orcid.org/0000-0002-0961-9665>),
@@ -63,6 +63,6 @@ Author: Kyle Grealis [aut, cre] (ORCID:
   Raymond Balise [ctb] (ORCID: <https://orcid.org/0000-0002-9856-5901>),
   Johannes Thrul [ctb] (ORCID: <https://orcid.org/0000-0001-8929-9579>),
   Janardan Devkota [ctb] (ORCID: <https://orcid.org/0009-0007-6734-777X>)
-Maintainer: Kyle Grealis <kylegrealis@proton.me>
+Maintainer: Kyle Grealis <kyle@kylegrealis.com>
 Repository: CRAN
-Date/Publication: 2026-02-28 20:40:02 UTC
+Date/Publication: 2026-05-04 19:30:06 UTC

@@ -21,10 +21,22 @@ catalog <- do.call(rbind, lapply(config$datasets, function(x) {
   )
 }))
 
+catalog <- rbind(catalog, data.frame(
+  Dataset = "MORTALITY",
+  Description = "NHANES-Linked Mortality (NDI) - Follow-up Through 2019",
+  Category = "Linkage",
+  stringsAsFactors = FALSE
+))
+
 ## -----------------------------------------------------------------------------
 catalog |>
   arrange(Dataset) |>
   reactable::reactable(
-    searchable = TRUE
+    searchable = TRUE,
+    columns = list(
+      Dataset = reactable::colDef(width = 120),
+      Category = reactable::colDef(width = 140),
+      Description = reactable::colDef(minWidth = 300)
+    )
   )
 
